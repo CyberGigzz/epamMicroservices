@@ -147,8 +147,16 @@ TrainingType
 
 ### Completed
 
-- [ ] Initial codebase analysis
-- [ ] Migration plan documented
+- [x] Initial codebase analysis
+- [x] Migration plan documented
+- [x] Create eureka-server module (port 8761)
+- [x] Create trainer-workload-service microservice (port 8081)
+- [x] Implement workload calculation with monthly aggregation
+- [x] Add JWT authentication to trainer-workload-service
+- [x] Register spring-gym-core with Eureka
+- [x] Add Feign client for inter-service communication
+- [x] Implement Circuit Breaker pattern with Resilience4j
+- [x] Implement transaction logging with transactionId propagation
 
 ### In Progress
 
@@ -156,9 +164,9 @@ TrainingType
 
 ### Next Steps
 
-- [ ] Create eureka-server module
 - [ ] Create api-gateway module
-- [ ] Set up multi-module Maven project structure
+- [ ] Add message queue for reliable inter-service communication
+- [ ] Extract additional microservices (trainee, trainer, auth)
 
 ---
 
@@ -207,4 +215,4 @@ cd spring-gym-core
 
 ---
 
-*Last updated: 2025-12-20*
+*Last updated: 2025-12-21*
