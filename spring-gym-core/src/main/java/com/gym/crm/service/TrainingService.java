@@ -1,5 +1,6 @@
 package com.gym.crm.service;
 
+import com.gym.crm.client.TrainerWorkloadClient;
 import com.gym.crm.dao.TraineeDAO;
 import com.gym.crm.dao.TrainerDAO;
 import com.gym.crm.dao.TrainingDAO;
@@ -12,6 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gym.crm.dto.WorkloadRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -20,16 +27,20 @@ import java.util.Optional;
 public class TrainingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainingService.class);
+    private final TrainerWorkloadClient workloadClient;
 
     private final TrainingDAO trainingDAO;
     private final TraineeDAO traineeDAO;
     private final TrainerDAO trainerDAO;
 
-    public TrainingService(TrainingDAO trainingDAO, TraineeDAO traineeDAO, TrainerDAO trainerDAO) {
+    public TrainingService(TrainingDAO trainingDAO, TraineeDAO traineeDAO, 
+                       TrainerDAO trainerDAO, TrainerWorkloadClient workloadClient) {
         this.trainingDAO = trainingDAO;
         this.traineeDAO = traineeDAO;
         this.trainerDAO = trainerDAO;
+        this.workloadClient = workloadClient;
     }
+
 
 
     public Training addTraining(String traineeUsername, String trainerUsername, String trainingName, TrainingType trainingType, LocalDate trainingDate, int duration) {
@@ -53,8 +64,43 @@ public class TrainingService {
         training.setTrainingDuration(duration);
 
         trainingDAO.save(training);
+        // Notify workload service
+        notifyWorkloadService(trainer, trainingDate, duration, WorkloadRequest.ActionType.ADD);
+
         LOGGER.info("Successfully created training '{}' for trainee {}", trainingName, traineeUsername);
 
         return training;
     }
+
+    private void notifyWorkloadService(Trainer trainer, LocalDate trainingDate, 
+                                    int duration, WorkloadRequest.ActionType actionType) {
+        try {
+            ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            String authToken = "";
+            String transactionId = "";
+            
+            if (attrs != null) {
+                HttpServletRequest request = attrs.getRequest();
+                authToken = request.getHeader("Authorization");
+                transactionId = request.getHeader("X-Transaction-Id");
+            }
+
+            WorkloadRequest workloadRequest = WorkloadRequest.builder()
+                    .trainerUsername(trainer.getUsername())
+                    .trainerFirstName(trainer.getFirstName())
+                    .trainerLastName(trainer.getLastName())
+                    .isActive(trainer.isActive())
+                    .trainingDate(trainingDate)
+                    .trainingDuration(duration)
+                    .actionType(actionType)
+                    .build();
+
+            workloadClient.updateWorkload(authToken, transactionId, workloadRequest);
+            LOGGER.info("Notified workload service: {} {} minutes for trainer {}", 
+                    actionType, duration, trainer.getUsername());
+        } catch (Exception e) {
+            LOGGER.error("Failed to notify workload service: {}", e.getMessage());
+        }
+    }
+
 }
