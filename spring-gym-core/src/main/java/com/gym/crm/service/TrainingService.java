@@ -17,6 +17,7 @@ import com.gym.crm.dto.WorkloadRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.slf4j.MDC;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -80,12 +81,15 @@ public class TrainingService {
                                     int duration, WorkloadRequest.ActionType actionType) {
         ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         String authToken = "";
-        String transactionId = "";
+        String transactionId = MDC.get("transactionId");
         
         if (attrs != null) {
             HttpServletRequest request = attrs.getRequest();
             authToken = request.getHeader("Authorization");
-            transactionId = request.getHeader("X-Transaction-Id");
+        }
+
+        if (transactionId == null) {
+            transactionId = "";
         }
 
         WorkloadRequest workloadRequest = WorkloadRequest.builder()
