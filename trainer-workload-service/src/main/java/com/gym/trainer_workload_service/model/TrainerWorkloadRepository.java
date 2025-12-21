@@ -12,11 +12,11 @@ public interface TrainerWorkloadRepository extends JpaRepository<TrainerWorkload
     /**
      * Find workload for a specific trainer in a specific month.
      */
-    Optional<TrainerWorkload> findByTrainerUsernameAndYearAndMonth(
-            String trainerUsername, Integer year, Integer month);
+    Optional<TrainerWorkload> findByTrainerUsernameAndTrainingYearAndTrainingMonth(
+            String trainerUsername, Integer trainingYear, Integer trainingMonth);
 
     /**
      * Find all workload records for a trainer (all months).
      */
-    List<TrainerWorkload> findByTrainerUsernameOrderByYearAscMonthAsc(String trainerUsername);
+    List<TrainerWorkload> findByTrainerUsernameOrderByTrainingYearAscTrainingMonthAsc(String trainerUsername);
 }

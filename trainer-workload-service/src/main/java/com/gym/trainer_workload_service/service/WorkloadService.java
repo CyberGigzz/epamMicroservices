@@ -34,7 +34,7 @@ public class WorkloadService {
                 month, year);
 
         Optional<TrainerWorkload> existing = repository
-                .findByTrainerUsernameAndYearAndMonth(request.getTrainerUsername(), year, month);
+                .findByTrainerUsernameAndTrainingYearAndTrainingMonth(request.getTrainerUsername(), year, month);
 
         if (request.getActionType() == WorkloadRequest.ActionType.ADD) {
             handleAdd(request, existing, year, month);
@@ -62,8 +62,8 @@ public class WorkloadService {
                     .trainerFirstName(request.getTrainerFirstName())
                     .trainerLastName(request.getTrainerLastName())
                     .isActive(request.getIsActive())
-                    .year(year)
-                    .month(month)
+                    .trainingYear(year)
+                    .trainingMonth(month)
                     .totalDuration(request.getTrainingDuration())
                     .build();
             repository.save(workload);
@@ -88,7 +88,7 @@ public class WorkloadService {
     @Transactional(readOnly = true)
     public TrainerSummary getTrainerSummary(String username) {
         List<TrainerWorkload> workloads = repository
-                .findByTrainerUsernameOrderByYearAscMonthAsc(username);
+                .findByTrainerUsernameOrderByTrainingYearAscTrainingMonthAsc(username);
 
         if (workloads.isEmpty()) {
             return null;
@@ -98,16 +98,16 @@ public class WorkloadService {
 
         // Group by year
         Map<Integer, List<TrainerWorkload>> byYear = workloads.stream()
-                .collect(Collectors.groupingBy(TrainerWorkload::getYear));
+                .collect(Collectors.groupingBy(TrainerWorkload::getTrainingYear));
 
         List<TrainerSummary.YearSummary> years = byYear.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(entry -> TrainerSummary.YearSummary.builder()
                         .year(entry.getKey())
                         .months(entry.getValue().stream()
-                                .sorted(Comparator.comparing(TrainerWorkload::getMonth))
+                                .sorted(Comparator.comparing(TrainerWorkload::getTrainingMonth))
                                 .map(w -> TrainerSummary.MonthSummary.builder()
-                                        .month(w.getMonth())
+                                        .month(w.getTrainingMonth())
                                         .trainingSummaryDuration(w.getTotalDuration())
                                         .build())
                                 .collect(Collectors.toList()))

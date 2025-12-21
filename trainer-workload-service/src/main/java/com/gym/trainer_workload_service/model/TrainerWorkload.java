@@ -12,7 +12,7 @@ import lombok.*;
 @Entity
 @Table(name = "trainer_workloads",
        uniqueConstraints = @UniqueConstraint(
-           columnNames = {"trainerUsername", "year", "month"}
+           columnNames = {"trainer_username", "training_year", "training_month"}
        ))
 @Data
 @Builder
@@ -24,21 +24,24 @@ public class TrainerWorkload {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "trainer_username", nullable = false)
     private String trainerUsername;
 
+    @Column(name = "trainer_first_name")
     private String trainerFirstName;
 
+    @Column(name = "trainer_last_name")
     private String trainerLastName;
 
+    @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column(nullable = false)
-    private Integer year;
+    @Column(name = "training_year", nullable = false)
+    private Integer trainingYear;
 
-    @Column(nullable = false)
-    private Integer month;
+    @Column(name = "training_month", nullable = false)
+    private Integer trainingMonth;
 
-    @Column(nullable = false)
+    @Column(name = "total_duration", nullable = false)
     private Integer totalDuration; // in minutes
 }
