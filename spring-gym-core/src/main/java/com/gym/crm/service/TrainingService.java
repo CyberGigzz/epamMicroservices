@@ -18,6 +18,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
+
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -72,35 +75,40 @@ public class TrainingService {
         return training;
     }
 
+    @CircuitBreaker(name = "workloadService", fallbackMethod = "workloadFallback")
     private void notifyWorkloadService(Trainer trainer, LocalDate trainingDate, 
                                     int duration, WorkloadRequest.ActionType actionType) {
-        try {
-            ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            String authToken = "";
-            String transactionId = "";
-            
-            if (attrs != null) {
-                HttpServletRequest request = attrs.getRequest();
-                authToken = request.getHeader("Authorization");
-                transactionId = request.getHeader("X-Transaction-Id");
-            }
-
-            WorkloadRequest workloadRequest = WorkloadRequest.builder()
-                    .trainerUsername(trainer.getUsername())
-                    .trainerFirstName(trainer.getFirstName())
-                    .trainerLastName(trainer.getLastName())
-                    .isActive(trainer.isActive())
-                    .trainingDate(trainingDate)
-                    .trainingDuration(duration)
-                    .actionType(actionType)
-                    .build();
-
-            workloadClient.updateWorkload(authToken, transactionId, workloadRequest);
-            LOGGER.info("Notified workload service: {} {} minutes for trainer {}", 
-                    actionType, duration, trainer.getUsername());
-        } catch (Exception e) {
-            LOGGER.error("Failed to notify workload service: {}", e.getMessage());
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        String authToken = "";
+        String transactionId = "";
+        
+        if (attrs != null) {
+            HttpServletRequest request = attrs.getRequest();
+            authToken = request.getHeader("Authorization");
+            transactionId = request.getHeader("X-Transaction-Id");
         }
+
+        WorkloadRequest workloadRequest = WorkloadRequest.builder()
+                .trainerUsername(trainer.getUsername())
+                .trainerFirstName(trainer.getFirstName())
+                .trainerLastName(trainer.getLastName())
+                .isActive(trainer.isActive())
+                .trainingDate(trainingDate)
+                .trainingDuration(duration)
+                .actionType(actionType)
+                .build();
+
+        workloadClient.updateWorkload(authToken, transactionId, workloadRequest);
+        LOGGER.info("Notified workload service: {} {} minutes for trainer {}", 
+                actionType, duration, trainer.getUsername());
     }
+
+    private void workloadFallback(Trainer trainer, LocalDate trainingDate, 
+                              int duration, WorkloadRequest.ActionType actionType, 
+                              Exception e) {
+    LOGGER.warn("Circuit breaker fallback: Failed to notify workload service for trainer {}. Reason: {}", 
+            trainer.getUsername(), e.getMessage());
+}
+
 
 }
