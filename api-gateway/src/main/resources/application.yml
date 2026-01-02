@@ -10,7 +10,7 @@ spring:
         webmvc:
           routes:
             - id: gym-core-service
-              uri: lb://SPRING-GYM-CORE
+              uri: lb://GYM-SERVICE
               predicates:
                 - Path=/api/**
 

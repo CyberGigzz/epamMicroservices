@@ -61,12 +61,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isOpenEndpoint(String path, String method) {
-        if (path.equals("/api/auth/login")) {
-            return true;
-        }
-        if (method.equals("POST") && (path.equals("/api/trainees") || path.equals("/api/trainers"))) {
-            return true;
-        }
-        return false;
+    if (path.equals("/api/auth/login")) {
+        return true;
     }
+    if (path.equals("/api/trainees/register") || path.equals("/api/trainers/register")) {
+        return true;
+    }
+    return false;
+}
 }
