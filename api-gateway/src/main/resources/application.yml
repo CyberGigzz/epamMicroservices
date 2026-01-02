@@ -1,0 +1,41 @@
+server:
+  port: 8765
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: gym-core-service
+              uri: lb://SPRING-GYM-CORE
+              predicates:
+                - Path=/api/**
+
+            - id: trainer-workload-service
+              uri: lb://TRAINER-WORKLOAD-SERVICE
+              predicates:
+                - Path=/workload/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret-key: 0DAqMXd00SX91lyGdeHYnh2BuK+DmtP9u+ypeTUPgP8=
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    com.gym.apigateway: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
