@@ -1,9 +1,10 @@
 package com.gym.crm.service;
 
-import com.gym.crm.client.TrainerWorkloadClient;
 import com.gym.crm.dao.TraineeDAO;
 import com.gym.crm.dao.TrainerDAO;
 import com.gym.crm.dao.TrainingDAO;
+import com.gym.crm.dto.WorkloadRequest;
+import com.gym.crm.messaging.WorkloadMessageProducer;
 import com.gym.crm.model.Trainee;
 import com.gym.crm.model.Trainer;
 import com.gym.crm.model.Training;
@@ -13,16 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gym.crm.dto.WorkloadRequest;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.slf4j.MDC;
-
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-
-
-
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -31,23 +22,23 @@ import java.util.Optional;
 public class TrainingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainingService.class);
-    private final TrainerWorkloadClient workloadClient;
 
     private final TrainingDAO trainingDAO;
     private final TraineeDAO traineeDAO;
     private final TrainerDAO trainerDAO;
+    private final WorkloadMessageProducer messageProducer;
 
-    public TrainingService(TrainingDAO trainingDAO, TraineeDAO traineeDAO, 
-                       TrainerDAO trainerDAO, TrainerWorkloadClient workloadClient) {
+    public TrainingService(TrainingDAO trainingDAO, TraineeDAO traineeDAO,
+                           TrainerDAO trainerDAO, WorkloadMessageProducer messageProducer) {
         this.trainingDAO = trainingDAO;
         this.traineeDAO = traineeDAO;
         this.trainerDAO = trainerDAO;
-        this.workloadClient = workloadClient;
+        this.messageProducer = messageProducer;
     }
 
-
-
-    public Training addTraining(String traineeUsername, String trainerUsername, String trainingName, TrainingType trainingType, LocalDate trainingDate, int duration) {
+    public Training addTraining(String traineeUsername, String trainerUsername, String trainingName, TrainingType trainingType, 
+    LocalDate trainingDate, int duration) {
+        
         Optional<Trainee> traineeOpt = traineeDAO.findByUsername(traineeUsername);
         Optional<Trainer> trainerOpt = trainerDAO.findByUsername(trainerUsername);
 
@@ -68,30 +59,18 @@ public class TrainingService {
         training.setTrainingDuration(duration);
 
         trainingDAO.save(training);
-        // Notify workload service
-        notifyWorkloadService(trainer, trainingDate, duration, WorkloadRequest.ActionType.ADD);
+
+        // Send message to workload service (async via ActiveMQ)
+        sendWorkloadUpdate(trainer, trainingDate, duration, WorkloadRequest.ActionType.ADD);
 
         LOGGER.info("Successfully created training '{}' for trainee {}", trainingName, traineeUsername);
 
         return training;
     }
 
-    @CircuitBreaker(name = "workloadService", fallbackMethod = "workloadFallback")
-    private void notifyWorkloadService(Trainer trainer, LocalDate trainingDate, 
+    private void sendWorkloadUpdate(Trainer trainer, LocalDate trainingDate,
                                     int duration, WorkloadRequest.ActionType actionType) {
-        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        String authToken = "";
-        String transactionId = MDC.get("transactionId");
         
-        if (attrs != null) {
-            HttpServletRequest request = attrs.getRequest();
-            authToken = request.getHeader("Authorization");
-        }
-
-        if (transactionId == null) {
-            transactionId = "";
-        }
-
         WorkloadRequest workloadRequest = WorkloadRequest.builder()
                 .trainerUsername(trainer.getUsername())
                 .trainerFirstName(trainer.getFirstName())
@@ -102,17 +81,6 @@ public class TrainingService {
                 .actionType(actionType)
                 .build();
 
-        workloadClient.updateWorkload(authToken, transactionId, workloadRequest);
-        LOGGER.info("Notified workload service: {} {} minutes for trainer {}", 
-                actionType, duration, trainer.getUsername());
+        messageProducer.sendWorkloadMessage(workloadRequest);
     }
-
-    private void workloadFallback(Trainer trainer, LocalDate trainingDate, 
-                              int duration, WorkloadRequest.ActionType actionType, 
-                              Exception e) {
-    LOGGER.warn("Circuit breaker fallback: Failed to notify workload service for trainer {}. Reason: {}", 
-            trainer.getUsername(), e.getMessage());
-}
-
-
 }

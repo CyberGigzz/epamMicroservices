@@ -93,6 +93,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+				<!-- ActiveMQ Artemis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-artemis</artifactId>
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
