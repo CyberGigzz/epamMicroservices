@@ -1,22 +1,15 @@
 package com.gym.trainer_workload_service.model;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TrainerWorkloadRepository extends JpaRepository<TrainerWorkload, Long> {
+public interface TrainerWorkloadRepository extends MongoRepository<TrainerWorkload, String> {
 
     /**
-     * Find workload for a specific trainer in a specific month.
+     * Find workload document by trainer username.
      */
-    Optional<TrainerWorkload> findByTrainerUsernameAndTrainingYearAndTrainingMonth(
-            String trainerUsername, Integer trainingYear, Integer trainingMonth);
-
-    /**
-     * Find all workload records for a trainer (all months).
-     */
-    List<TrainerWorkload> findByTrainerUsernameOrderByTrainingYearAscTrainingMonthAsc(String trainerUsername);
+    Optional<TrainerWorkload> findByTrainerUsername(String trainerUsername);
 }
