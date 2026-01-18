@@ -8,15 +8,15 @@ INSERT INTO training_types (id, training_type_name) VALUES (5, 'CrossFit');
 -- Seed Users (password is BCrypt encoded "password123")
 -- Trainers
 INSERT INTO users (id, first_name, last_name, username, password, is_active)
-VALUES (1, 'John', 'Smith', 'john.smith', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', true);
+VALUES (1, 'John', 'Smith', 'john.smith', '$2a$10$lUpyjuWKywh8kgSndVCnH.8.B/WCj7iwwKsML8mdeMRq1dXifhaNi', true);
 INSERT INTO users (id, first_name, last_name, username, password, is_active)
-VALUES (2, 'Jane', 'Doe', 'jane.doe', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', true);
+VALUES (2, 'Jane', 'Doe', 'jane.doe', '$2a$10$lUpyjuWKywh8kgSndVCnH.8.B/WCj7iwwKsML8mdeMRq1dXifhaNi', true);
 
 -- Trainees
 INSERT INTO users (id, first_name, last_name, username, password, is_active)
-VALUES (3, 'Mike', 'Johnson', 'mike.johnson', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', true);
+VALUES (3, 'Mike', 'Johnson', 'mike.johnson', '$2a$10$lUpyjuWKywh8kgSndVCnH.8.B/WCj7iwwKsML8mdeMRq1dXifhaNi', true);
 INSERT INTO users (id, first_name, last_name, username, password, is_active)
-VALUES (4, 'Sarah', 'Wilson', 'sarah.wilson', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', true);
+VALUES (4, 'Sarah', 'Wilson', 'sarah.wilson', '$2a$10$lUpyjuWKywh8kgSndVCnH.8.B/WCj7iwwKsML8mdeMRq1dXifhaNi', true);
 
 -- Seed Trainers (references users table)
 INSERT INTO trainers (id, specialization_id) VALUES (1, 2);  -- John Smith - Strength
