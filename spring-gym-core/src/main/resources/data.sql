@@ -30,3 +30,7 @@ INSERT INTO trainees (id, date_of_birth, address) VALUES (4, '1998-08-22', '456 
 INSERT INTO trainee_trainer (trainee_id, trainer_id) VALUES (3, 1);  -- Mike with John
 INSERT INTO trainee_trainer (trainee_id, trainer_id) VALUES (3, 2);  -- Mike with Jane
 INSERT INTO trainee_trainer (trainee_id, trainer_id) VALUES (4, 1);  -- Sarah with John
+
+-- Reset sequences to avoid ID conflicts with new inserts
+ALTER TABLE users ALTER COLUMN id RESTART WITH 100;
+ALTER TABLE training_types ALTER COLUMN id RESTART WITH 100;
