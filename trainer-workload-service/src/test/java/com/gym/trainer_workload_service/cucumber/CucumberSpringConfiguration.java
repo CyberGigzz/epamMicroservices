@@ -33,7 +33,6 @@ public class CucumberSpringConfiguration {
     static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:7.0");
 
     // Mock JmsTemplate since we're not testing messaging in component tests
-    @MockBean
     private JmsTemplate jmsTemplate;
 
     @DynamicPropertySource
