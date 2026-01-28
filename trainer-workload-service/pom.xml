@@ -108,6 +108,21 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Testcontainers for ActiveMQ Artemis (Integration Tests) -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-jakarta-server</artifactId>
+			<version>2.31.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Awaitility for async testing -->
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 				<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

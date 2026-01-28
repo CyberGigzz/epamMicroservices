@@ -1,4 +1,4 @@
-package com.gym.crm.cucumber;
+package com.gym.crm.integration;
 
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
@@ -10,14 +10,15 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 
 /**
- * Cucumber test runner for component tests.
- * Excludes integration tests (tagged with @integration).
+ * Cucumber test runner for integration tests.
+ *
+ * Runs only scenarios tagged with @integration.
  */
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.gym.crm.cucumber")
-@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-reports.html")
-@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @integration")
-public class CucumberTest {
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.gym.crm.integration")
+@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-integration-reports.html")
+@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@integration")
+public class IntegrationCucumberTest {
 }
