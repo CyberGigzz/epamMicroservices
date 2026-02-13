@@ -24,6 +24,34 @@ services:
     volumes:
       - mongodb-data:/data/db
 
+  gym-service:
+    build: ./spring-gym-core
+    container_name: gym-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_ARTEMIS_BROKER-URL: tcp://activemq:61616
+      SPRING_ARTEMIS_USER: admin
+      SPRING_ARTEMIS_PASSWORD: admin
+      EUREKA_CLIENT_ENABLED: "false"
+    depends_on:
+      - activemq
+
+  trainer-workload-service:
+    build: ./trainer-workload-service
+    container_name: trainer-workload-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:admin@mongodb:27017/trainer_workload?authSource=admin
+      SPRING_ARTEMIS_BROKER-URL: tcp://activemq:61616
+      SPRING_ARTEMIS_USER: admin
+      SPRING_ARTEMIS_PASSWORD: admin
+      EUREKA_CLIENT_ENABLED: "false"
+    depends_on:
+      - activemq
+      - mongodb
+
 volumes:
   activemq-data:
   mongodb-data:
