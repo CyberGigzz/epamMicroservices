@@ -14,7 +14,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
+// @Component
 @Slf4j
 public class WorkloadMessageConsumer {
 

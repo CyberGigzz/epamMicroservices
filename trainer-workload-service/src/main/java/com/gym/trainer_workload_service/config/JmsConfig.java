@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.util.ErrorHandler;
 
-@Configuration
+// @Configuration
 @Slf4j
 public class JmsConfig {
 
