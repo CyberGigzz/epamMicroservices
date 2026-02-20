@@ -88,4 +88,4 @@ application-*.yml
 surefire-reports/
 
 # Spring Boot
-HELP.md
+HELP.md*.tar
