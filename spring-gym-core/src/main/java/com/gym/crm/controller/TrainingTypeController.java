@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/training-types")
+// @RestController
+// @RequestMapping("/api/training-types")
 @Tag(name = "Training Type Controller", description = "Endpoint for getting training types (Task 17)")
 public class TrainingTypeController {
 

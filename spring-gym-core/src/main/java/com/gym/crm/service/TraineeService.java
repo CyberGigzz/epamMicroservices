@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
-@Transactional
+// @Service
+// @Transactional
 public class TraineeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TraineeService.class);

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
+// @Component
 public class WorkloadMessageProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkloadMessageProducer.class);

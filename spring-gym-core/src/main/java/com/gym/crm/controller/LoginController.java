@@ -25,8 +25,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/auth")
+// @RestController
+// @RequestMapping("/api/auth")
 @Tag(name = "Authentication Controller", description = "Endpoints for user login and password changes (Tasks 3 & 4)")
 public class LoginController {
 

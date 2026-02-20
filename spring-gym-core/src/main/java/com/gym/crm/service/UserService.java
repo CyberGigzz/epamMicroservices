@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
-@Component
+// @Component
 public class UserService {
 
     private final TraineeDAO traineeDAO;

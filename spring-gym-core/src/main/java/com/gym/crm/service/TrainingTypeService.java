@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@Transactional(readOnly = true)
+// @Service
+// @Transactional(readOnly = true)
 public class TrainingTypeService {
 
     private final TrainingTypeDAO trainingTypeDAO;

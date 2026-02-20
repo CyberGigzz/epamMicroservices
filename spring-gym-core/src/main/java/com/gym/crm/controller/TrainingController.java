@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/trainings")
+// @RestController
+// @RequestMapping("/api/trainings")
 @Tag(name = "Training Controller", description = "Endpoints for managing trainings")
 public class TrainingController {
 

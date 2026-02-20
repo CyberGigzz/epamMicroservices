@@ -17,8 +17,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@Transactional
+// @Service
+// @Transactional
 public class TrainerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainerService.class);

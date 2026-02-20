@@ -30,8 +30,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/trainers")
+// @RestController
+// @RequestMapping("/api/trainers")
 @Tag(name = "Trainer Controller", description = "Endpoints for managing trainer profiles and activities")
 public class TrainerController {
 

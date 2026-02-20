@@ -1,7 +1,7 @@
 package com.gym.crm.config;
 
-import com.gym.crm.dao.TraineeDAO;
-import com.gym.crm.dao.TrainerDAO;
+// import com.gym.crm.dao.TraineeDAO;
+// import com.gym.crm.dao.TrainerDAO;
 import com.gym.crm.security.JwtRequestFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -20,8 +20,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; 
-import org.springframework.security.crypto.password.PasswordEncoder;   
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -30,42 +30,27 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 @Configuration
-@EnableWebSecurity 
+@EnableWebSecurity
 public class SecurityConfig {
 
-    private final TraineeDAO traineeDAO;
-    private final TrainerDAO trainerDAO;
+    // private final TraineeDAO traineeDAO;
+    // private final TrainerDAO trainerDAO;
     private final JwtRequestFilter jwtRequestFilter;
 
-    public SecurityConfig(TraineeDAO traineeDAO, TrainerDAO trainerDAO, JwtRequestFilter jwtRequestFilter) {
-        this.traineeDAO = traineeDAO;
-        this.trainerDAO = trainerDAO;
+    public SecurityConfig(JwtRequestFilter jwtRequestFilter) {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); 
+        return new BCryptPasswordEncoder();
     }
 
+    // Temporary in-memory UserDetailsService (DB connection commented out for AWS deployment)
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            return traineeDAO.findByUsername(username)
-                    .<UserDetails>map(trainee -> User.builder()
-                            .username(trainee.getUsername())
-                            .password(trainee.getPassword())
-                            .roles("TRAINEE") 
-                            .build())
-                    .orElseGet(() ->
-                        trainerDAO.findByUsername(username)
-                                .<UserDetails>map(trainer -> User.builder()
-                                        .username(trainer.getUsername())
-                                        .password(trainer.getPassword())
-                                        .roles("TRAINER") 
-                                        .build())
-                                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username))
-                    );
+            throw new UsernameNotFoundException("DB not connected - user lookup disabled");
         };
     }
 
