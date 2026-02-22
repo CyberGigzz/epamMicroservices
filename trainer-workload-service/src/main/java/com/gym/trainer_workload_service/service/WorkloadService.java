@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+// @Service  // Commented out - MongoDB dependency, will be replaced with DynamoDB
 @RequiredArgsConstructor
 @Slf4j
 public class WorkloadService {

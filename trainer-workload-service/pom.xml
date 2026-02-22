@@ -148,10 +148,10 @@
 			<scope>runtime</scope>
 		</dependency>
 
-				<!-- ActiveMQ Artemis -->
+				<!-- AWS SQS -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-artemis</artifactId>
+			<groupId>io.awspring.cloud</groupId>
+			<artifactId>spring-cloud-aws-starter-sqs</artifactId>
 		</dependency>
 
 	</dependencies>
@@ -161,6 +161,13 @@
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
 				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.awspring.cloud</groupId>
+				<artifactId>spring-cloud-aws-dependencies</artifactId>
+				<version>3.2.1</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
