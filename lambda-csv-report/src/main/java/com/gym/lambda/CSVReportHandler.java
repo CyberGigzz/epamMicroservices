@@ -12,6 +12,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.core.sync.RequestBody;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class CSVReportHandler implements RequestHandler<Object, String> {
@@ -22,7 +24,11 @@ public class CSVReportHandler implements RequestHandler<Object, String> {
 
     @Override
     public String handleRequest(Object input, Context context) {
-        context.getLogger().log("Starting CSV Report generation...\n");
+        LocalDateTime executionTime = LocalDateTime.now();
+        context.getLogger().log("=== SpringGym CSV Report Lambda ===\n");
+        context.getLogger().log("Execution started at: " + executionTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "\n");
+        context.getLogger().log("Function name: " + context.getFunctionName() + "\n");
+        context.getLogger().log("Remaining time (ms): " + context.getRemainingTimeInMillis() + "\n");
 
         LocalDate now = LocalDate.now();
         String year = String.valueOf(now.getYear());
@@ -83,6 +89,7 @@ public class CSVReportHandler implements RequestHandler<Object, String> {
         String result = String.format("Report '%s' uploaded to S3 bucket '%s' with %d trainers",
                 reportName, BUCKET_NAME, trainerCount);
         context.getLogger().log(result + "\n");
+        context.getLogger().log("Execution completed at: " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "\n");
 
         dynamoDb.close();
         s3.close();
